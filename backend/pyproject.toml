@@ -8,3 +8,9 @@ dependencies = [
     "fastapi>=0.116.1",
     "uvicorn>=0.35.0",
 ]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.1",
+    "ruff>=0.12.7",
+]
