@@ -1,5 +1,6 @@
 import pytest
 
+from src.application.exceptions import EntityNotFoundError
 from src.application.dto import LoginCommand
 from src.application.use_cases import Login
 from src.domain.exceptions import InactiveUserError, InvalidCredentialsError
@@ -36,7 +37,7 @@ async def test_login_user_with_invalid_email(user_repository, user):
         user_repository=user_repository
     )
 
-    with pytest.raises(InvalidCredentialsError, match="Incorrect username or password"):
+    with pytest.raises(EntityNotFoundError, match="User not found"):
         await login.execute(login_command)
 
 

@@ -1,6 +1,5 @@
 from src.application.ports.repositories.user_repository import UserRepository
 from src.domain.entities.user import User
-from src.domain.exceptions.user_exceptions import UserNotFoundError
 from src.domain.services.jwt_token import JWTTokenService
 
 
@@ -19,6 +18,4 @@ class GetCurrentUser:
 
         user = await self._user_repository.find_by_email(user_email)
 
-        if not user:
-            raise UserNotFoundError
         return user

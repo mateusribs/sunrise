@@ -1,7 +1,7 @@
 import pytest
 
+from src.application.exceptions.sql_database import EntityNotFoundError
 from src.application.use_cases.get_current_user import GetCurrentUser
-from src.domain.exceptions import UserNotFoundError
 from src.domain.services.jwt_token import JWTTokenService
 
 
@@ -37,5 +37,5 @@ async def test_get_current_user_nonexistent_user(user_repository):
 
     get_current_user = GetCurrentUser(user_repository)
 
-    with pytest.raises(UserNotFoundError):
+    with pytest.raises(EntityNotFoundError):
         await get_current_user.execute(user_token)
