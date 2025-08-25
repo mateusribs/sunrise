@@ -11,6 +11,9 @@ test:
 run:
 	@uv run --no-sync fastapi dev src/api.py
 
+install:
+	@uv sync --locked
+
 upgrade_db:
 	@uv run --no-sync alembic upgrade head
 
