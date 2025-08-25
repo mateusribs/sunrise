@@ -1,0 +1,32 @@
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    network_mode: host
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    env_file:
+      - .env
+    healthcheck:
+      test: "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    ports:
+      - "5432:5432"
+
+  sunrise_backend:
+    image: sunrise_backend
+    container_name: sunrise_backend
+    network_mode: host
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+    entrypoint: ./entrypoint.sh
+
+volumes:
+  pgdata:
