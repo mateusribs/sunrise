@@ -11,7 +11,8 @@ async def test_get_users(user_repository, user, other_user):
 
     get_users = GetUsers(user_repository)
     users = await get_users.execute(get_users_command)
-    user_domain, other_user_domain = user_repository._model_to_entity(user), user_repository._model_to_entity(other_user)
+    user_domain = user_repository._model_to_entity(user)
+    other_user_domain = user_repository._model_to_entity(other_user)
 
     assert len(users) == 2
     assert users == [user_domain, other_user_domain]
@@ -35,8 +36,10 @@ async def test_get_users_when_user_is_not_admin(user_repository, user, other_use
 
     get_users = GetUsers(user_repository)
 
-    with pytest.raises(InsufficientPermissionsError, match="Only admin users can retrieve the user list"):
-        users = await get_users.execute(get_users_command)
+    with pytest.raises(
+        InsufficientPermissionsError, match='Only admin users can retrieve the user list'
+    ):
+        await get_users.execute(get_users_command)
 
 
 @pytest.mark.asyncio
@@ -45,5 +48,5 @@ async def test_get_users_when_user_is_inactive(user_repository, user, other_user
 
     get_users = GetUsers(user_repository)
 
-    with pytest.raises(InactiveUserError, match="Inactive users cannot perform this action"):
-        users = await get_users.execute(get_users_commnand)
+    with pytest.raises(InactiveUserError, match='Inactive users cannot perform this action'):
+        await get_users.execute(get_users_commnand)

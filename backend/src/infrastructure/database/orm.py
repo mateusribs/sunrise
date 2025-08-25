@@ -15,9 +15,7 @@ class UserModel:
     id: Mapped[str] = mapped_column(primary_key=True)
     first_name: Mapped[str] = mapped_column(default='')
     last_name: Mapped[str] = mapped_column(default='')
-    created_at: Mapped[datetime] = mapped_column(
-        default=func.now(), server_default=func.now()
-    )
+    created_at: Mapped[datetime] = mapped_column(default=func.now(), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(
         default=func.now(), server_default=func.now(), onupdate=func.now()
     )

@@ -20,7 +20,7 @@ class CreateUser:
             email=command.email,
             password=command.password,
             first_name=command.first_name,
-            last_name=command.last_name
+            last_name=command.last_name,
         )
 
         user.password = self._password_service.hash_password(user.password)

@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -16,37 +18,8 @@ def user_repository(session: AsyncSession = Depends(get_session)):
     return SQLAlchemyUserRepository(session)
 
 
-# Use Cases
-def create_user(
-    user_repository=Depends(user_repository),
-):
-    """Dependency para use case de criação de usuário"""
-    return CreateUser(user_repository)
-
-
-def get_users(
-    user_repository=Depends(user_repository)
-):
-    """Dependency para use case de busca de usuários"""
-    return GetUsers(user_repository)
-
-
-def update_user(
-    user_repository=Depends(user_repository)
-):
-    """Dependency para use case de atualização de usuário"""
-    return UpdateUser(user_repository)
-
-
-def get_current_user(
-    user_repository=Depends(user_repository)
-):
-    """Dependency para obter o usuário atual"""
-    return GetCurrentUser(user_repository)
-
-
-def login(
-    user_repository=Depends(user_repository)
-):
-    """Dependency para use case de login"""
-    return Login(user_repository)
+CreateUserDependency = Annotated[CreateUser, Depends(user_repository)]
+GetUsersDependency = Annotated[GetUsers, Depends(user_repository)]
+UpdateUserDependency = Annotated[UpdateUser, Depends(user_repository)]
+GetCurrentUserDependency = Annotated[GetCurrentUser, Depends(user_repository)]
+LoginDependency = Annotated[Login, Depends(user_repository)]

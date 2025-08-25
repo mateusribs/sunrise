@@ -1,4 +1,3 @@
-
 import uuid
 from contextlib import contextmanager
 from datetime import datetime
@@ -53,6 +52,7 @@ def _mock_db_time(*, model, time=datetime(2025, 1, 1)):
 @pytest.fixture
 def mock_db_time():
     return _mock_db_time
+
 
 # @pytest.fixture(autouse=True)
 # def export_test_environment(monkeypatch):

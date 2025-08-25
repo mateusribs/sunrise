@@ -7,9 +7,9 @@ class TestSQLAlchemyUserRepository:
     @pytest.mark.asyncio
     async def test_save(self, user_repository):
         user = User(
-            username="testuser",
-            email="testuser@example.com",
-            password="HashedPassword123",
+            username='testuser',
+            email='testuser@example.com',
+            password='HashedPassword123',
         )
 
         await user_repository.save(user)

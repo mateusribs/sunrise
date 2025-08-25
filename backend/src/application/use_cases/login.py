@@ -8,10 +8,7 @@ from src.domain.services.password import PasswordService
 class Login:
     """Use case para autenticação de usuário"""
 
-    def __init__(
-        self,
-        user_repository: UserRepository
-    ):
+    def __init__(self, user_repository: UserRepository):
         self._user_repository = user_repository
         self._password_service = PasswordService()
         self._token_service = JWTTokenService()
@@ -22,15 +19,15 @@ class Login:
         # Buscar usuário por email
         user = await self._user_repository.find_by_email(command.email)
         if not user:
-            raise InvalidCredentialsError("Incorrect username or password")
+            raise InvalidCredentialsError('Incorrect username or password')
 
         # Verificar se usuário está ativo
         if not user.is_active:
-            raise InactiveUserError("User account is inactive")
+            raise InactiveUserError('User account is inactive')
 
         # Verificar senha
         if not self._password_service.verify_password(command.password, user.password):
-            raise InvalidCredentialsError("Incorrect username or password")
+            raise InvalidCredentialsError('Incorrect username or password')
 
         # Gerar token
         token_data = {'sub': user.email}

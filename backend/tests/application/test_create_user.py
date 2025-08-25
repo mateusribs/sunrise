@@ -13,7 +13,7 @@ async def test_create_user(user_repository):
         email='testuser@example.com',
         password='Password123',
         first_name='Test',
-        last_name='User'
+        last_name='User',
     )
 
     create_user = CreateUser(user_repository)
@@ -39,12 +39,12 @@ async def test_create_user_with_invalid_username(user_repository):
         email='testuser@example.com',
         password='Password123',
         first_name='Test',
-        last_name='User'
+        last_name='User',
     )
 
     create_user = CreateUser(user_repository)
 
-    with pytest.raises(InvalidUsernameError, match="Username cannot be empty"):
+    with pytest.raises(InvalidUsernameError, match='Username cannot be empty'):
         await create_user.execute(user_command)
 
 
@@ -55,12 +55,12 @@ async def test_create_user_with_short_password(user_repository):
         email='testuser@example.com',
         password='short',
         first_name='Test',
-        last_name='User'
+        last_name='User',
     )
 
     create_user = CreateUser(user_repository)
 
-    with pytest.raises(InvalidPasswordError, match="Password must be at least 8 characters long"):
+    with pytest.raises(InvalidPasswordError, match='Password must be at least 8 characters long'):
         await create_user.execute(user_command)
 
 
@@ -71,7 +71,7 @@ async def test_create_user_with_existing_email(user_repository):
         email='testuser@example.com',
         password='Password123',
         first_name='Test',
-        last_name='User'
+        last_name='User',
     )
 
     user_command_duplicate = CreateUserCommand(
@@ -79,7 +79,7 @@ async def test_create_user_with_existing_email(user_repository):
         email='testuser@example.com',
         password='Password123',
         first_name='Test',
-        last_name='User'
+        last_name='User',
     )
 
     create_user = CreateUser(user_repository)
@@ -97,7 +97,7 @@ async def test_create_user_with_existing_username(user_repository):
         email='testuser@example.com',
         password='Password123',
         first_name='Test',
-        last_name='User'
+        last_name='User',
     )
 
     user_command_duplicate = CreateUserCommand(
@@ -105,7 +105,7 @@ async def test_create_user_with_existing_username(user_repository):
         email='testuser2@example.com',
         password='Password123',
         first_name='Test',
-        last_name='User'
+        last_name='User',
     )
 
     create_user = CreateUser(user_repository)

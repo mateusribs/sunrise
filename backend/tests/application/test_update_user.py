@@ -11,10 +11,7 @@ from src.domain.exceptions import (
 @pytest.mark.asyncio
 async def test_update_user_when_is_admin(user_repository, user, other_user):
     user_command = UpdateUserCommand(
-        user_id=user.id,
-        username='newusername',
-        first_name='New',
-        last_name='Name'
+        user_id=user.id, username='newusername', first_name='New', last_name='Name'
     )
 
     current_user = user_repository._model_to_entity(other_user)
@@ -34,10 +31,7 @@ async def test_update_user_when_is_admin(user_repository, user, other_user):
 @pytest.mark.asyncio
 async def test_update_user_when_is_same_user(user_repository, user):
     user_command = UpdateUserCommand(
-        user_id=user.id,
-        username='newusername',
-        first_name='New',
-        last_name='Name'
+        user_id=user.id, username='newusername', first_name='New', last_name='Name'
     )
 
     current_user = user_repository._model_to_entity(user)
@@ -56,10 +50,7 @@ async def test_update_user_when_is_same_user(user_repository, user):
 
 @pytest.mark.asyncio
 async def test_update_different_id(user_repository, user):
-    user_command = UpdateUserCommand(
-        user_id='nonexistent-id',
-        username='newusername'
-    )
+    user_command = UpdateUserCommand(user_id='nonexistent-id', username='newusername')
 
     user_domain = user_repository._model_to_entity(user)
 
@@ -73,10 +64,7 @@ async def test_update_different_id(user_repository, user):
 async def test_update_username_already_exists(user_repository, user, other_user):
     user_domain = user_repository._model_to_entity(user)
 
-    user_command = UpdateUserCommand(
-        user_id=user_domain.id,
-        username=other_user.username
-    )
+    user_command = UpdateUserCommand(user_id=user_domain.id, username=other_user.username)
 
     update_user = UpdateUser(user_repository)
 

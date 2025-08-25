@@ -8,6 +8,7 @@ from src.domain.entities.user import User
 
 class UserRegisterRequest(BaseModel):
     """Schema para requisição de registro de usuário"""
+
     username: str
     email: EmailStr
     password: str
@@ -17,6 +18,7 @@ class UserRegisterRequest(BaseModel):
 
 class UserUpdateRequest(BaseModel):
     """Schema para requisição de atualização de usuário"""
+
     username: Optional[str] = None
     first_name: Optional[str] = None
     last_name: Optional[str] = None
@@ -24,6 +26,7 @@ class UserUpdateRequest(BaseModel):
 
 class UserResponse(BaseModel):
     """Schema para resposta de usuário"""
+
     id: uuid.UUID
     username: str
     email: str
@@ -44,22 +47,25 @@ class UserResponse(BaseModel):
             first_name=user.first_name,
             last_name=user.last_name,
             is_admin=user.is_admin,
-            is_active=user.is_active
+            is_active=user.is_active,
         )
 
 
 class UserListResponse(BaseModel):
     """Schema para resposta de lista de usuários"""
+
     users: list[UserResponse]
 
 
 class LoginRequest(BaseModel):
     """Schema para requisição de login"""
+
     email: EmailStr
     password: str
 
 
 class TokenResponse(BaseModel):
     """Schema para resposta de token"""
+
     access_token: str
-    token_type: str = "bearer"
+    token_type: str = 'bearer'

@@ -26,7 +26,7 @@ class User(BaseModel):
             InvalidUsernameError: If the username is empty or just whitespace.
         """
         if not username or not username.strip():
-            raise InvalidUsernameError("Username cannot be empty")
+            raise InvalidUsernameError('Username cannot be empty')
         return username
 
     @field_validator('password')
@@ -41,14 +41,15 @@ class User(BaseModel):
         Raises:
             InvalidPasswordError: If the password does not meet any of the above criteria.
         """
-        if len(password) < 8:
-            raise InvalidPasswordError("Password must be at least 8 characters long")
+        minimum_password_length = 8
+        if len(password) < minimum_password_length:
+            raise InvalidPasswordError('Password must be at least 8 characters long')
         if not re.search(r'\d', password):
-            raise InvalidPasswordError("Password must contain at least one digit")
+            raise InvalidPasswordError('Password must contain at least one digit')
         if not re.search(r'[A-Z]', password):
-            raise InvalidPasswordError("Password must contain at least one uppercase letter")
+            raise InvalidPasswordError('Password must contain at least one uppercase letter')
         if not re.search(r'[a-z]', password):
-            raise InvalidPasswordError("Password must contain at least one lowercase letter")
+            raise InvalidPasswordError('Password must contain at least one lowercase letter')
         return password
 
     def update_username(self, new_username: str) -> None:
@@ -75,4 +76,4 @@ class User(BaseModel):
 
     @property
     def full_name(self) -> str:
-        return f"{self.first_name} {self.last_name}".strip()
+        return f'{self.first_name} {self.last_name}'.strip()

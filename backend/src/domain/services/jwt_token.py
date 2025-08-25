@@ -22,22 +22,18 @@ class JWTTokenService:
             minutes=self._access_token_expires_minutes
         )
         to_encode.update({'exp': expire})
-        encoded_jwt = encode(
-            to_encode, self._secret_key, algorithm=self._algorithm
-        )
+        encoded_jwt = encode(to_encode, self._secret_key, algorithm=self._algorithm)
         return encoded_jwt
 
     def decode_token(self, token: str) -> Dict[str, Any]:
         """Decodifica um token JWT e retorna os dados"""
         try:
-            decoded = decode(
-                token, self._secret_key, algorithms=[self._algorithm]
-            )
+            decoded = decode(token, self._secret_key, algorithms=[self._algorithm])
             return decoded
 
         except ExpiredSignatureError:
-            raise ExpiredSignatureError("Token has expired")
+            raise ExpiredSignatureError('Token has expired')
         except DecodeError:
-            raise DecodeError("Token is invalid")
+            raise DecodeError('Token is invalid')
         except Exception as e:
-            raise Exception(f"An error occurred while decoding the token: {str(e)}")
+            raise Exception(f'An error occurred while decoding the token: {str(e)}')

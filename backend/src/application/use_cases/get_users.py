@@ -5,18 +5,14 @@ from src.domain.exceptions.user_exceptions import InactiveUserError, Insufficien
 
 
 class GetUsers:
-
     def __init__(self, user_repository: UserRepository):
         self._user_repository = user_repository
 
     async def execute(self, command: GetUsersCommand) -> list[User]:
         if not command.is_admin:
-            raise InsufficientPermissionsError("Only admin users can retrieve the user list")
+            raise InsufficientPermissionsError('Only admin users can retrieve the user list')
 
         if not command.is_active:
-            raise InactiveUserError("Inactive users cannot perform this action")
+            raise InactiveUserError('Inactive users cannot perform this action')
 
-        return await self._user_repository.find_all(
-            offset=command.offset,
-            limit=command.limit
-        )
+        return await self._user_repository.find_all(offset=command.offset, limit=command.limit)

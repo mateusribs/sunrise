@@ -5,6 +5,7 @@ from typing import Optional
 @dataclass
 class CreateUserCommand:
     """Comando para criar um usuário"""
+
     username: str
     email: str
     password: str
@@ -15,6 +16,7 @@ class CreateUserCommand:
 @dataclass
 class UpdateUserCommand:
     """Comando para atualizar um usuário"""
+
     user_id: str
     username: Optional[str] = None
     first_name: Optional[str] = None
@@ -24,6 +26,7 @@ class UpdateUserCommand:
 @dataclass
 class LoginCommand:
     """Comando para login"""
+
     email: str
     password: str
 
@@ -31,6 +34,7 @@ class LoginCommand:
 @dataclass
 class GetUsersCommand:
     """Comando para obter usuários"""
+
     is_active: bool
     is_admin: bool
     offset: int = 0
