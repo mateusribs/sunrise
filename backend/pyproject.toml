@@ -5,12 +5,52 @@ description = "Sunrise API"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "fastapi>=0.116.1",
+    "alembic>=1.16.4",
+    "fastapi[standard]>=0.116.1",
+    "greenlet>=3.2.3",
+    "pip>=25.2",
+    "psycopg[binary]>=3.2.9",
+    "pwdlib[argon2]>=0.2.1",
+    "pydantic-settings>=2.10.1",
+    "pydantic[email,standard]>=2.11.7",
+    "pyjwt>=2.10.1",
+    "python-multipart>=0.0.20",
+    "sqlalchemy>=2.0.42",
     "uvicorn>=0.35.0",
 ]
 
 [dependency-groups]
 dev = [
+    "aiosqlite>=0.21.0",
+    "factory-boy>=3.3.3",
+    "freezegun>=1.5.4",
+    "httpx>=0.28.1",
     "pytest>=8.4.1",
+    "pytest-asyncio>=1.1.0",
+    "pytest-coverage>=0.0",
     "ruff>=0.12.7",
+    "testcontainers>=4.12.0",
 ]
+
+[tool.ruff]
+line-length = 100
+extend-exclude = ['migrations']
+
+[tool.ruff.lint]
+preview = true
+select = ['I', 'F', 'E', 'W', 'PL', 'PT', 'FAST']
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["PLR6301"]
+
+[tool.ruff.format]
+preview = true
+quote-style = 'single'
+
+[tool.coverage.run]
+concurrency = ["thread", "greenlet"]
+
+[tool.pytest.ini_options]
+pythonpath = "."
+addopts = '-p no:warnings'
+asyncio_default_fixture_loop_scope = 'function'
