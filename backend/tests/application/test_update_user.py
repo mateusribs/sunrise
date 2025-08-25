@@ -35,7 +35,6 @@ async def test_update_user_when_is_same_user(user_repository, user):
     )
 
     current_user = user_repository._model_to_entity(user)
-    current_user.is_admin = True
 
     update_user = UpdateUser(user_repository)
 

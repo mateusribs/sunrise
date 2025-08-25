@@ -44,9 +44,9 @@ async def test_get_users_when_user_is_not_admin(user_repository, user, other_use
 
 @pytest.mark.asyncio
 async def test_get_users_when_user_is_inactive(user_repository, user, other_user):
-    get_users_commnand = GetUsersCommand(offset=0, limit=10, is_active=False, is_admin=True)
+    get_users_command = GetUsersCommand(offset=0, limit=10, is_active=False, is_admin=True)
 
     get_users = GetUsers(user_repository)
 
     with pytest.raises(InactiveUserError, match='Inactive users cannot perform this action'):
-        await get_users.execute(get_users_commnand)
+        await get_users.execute(get_users_command)
