@@ -19,7 +19,38 @@ def user_repository(session: AsyncSession = Depends(get_session)):
 
 
 CreateUserDependency = Annotated[CreateUser, Depends(user_repository)]
-GetUsersDependency = Annotated[GetUsers, Depends(user_repository)]
-UpdateUserDependency = Annotated[UpdateUser, Depends(user_repository)]
-GetCurrentUserDependency = Annotated[GetCurrentUser, Depends(user_repository)]
-LoginDependency = Annotated[Login, Depends(user_repository)]
+
+
+# Use Cases
+def create_user(
+    user_repository=Depends(user_repository),
+):
+    """Dependency para use case de criação de usuário"""
+    return CreateUser(user_repository)
+
+
+def get_users(user_repository=Depends(user_repository)):
+    """Dependency para use case de busca de usuários"""
+    return GetUsers(user_repository)
+
+
+def update_user(user_repository=Depends(user_repository)):
+    """Dependency para use case de atualização de usuário"""
+    return UpdateUser(user_repository)
+
+
+def get_current_user(user_repository=Depends(user_repository)):
+    """Dependency para obter o usuário atual"""
+    return GetCurrentUser(user_repository)
+
+
+def login(user_repository=Depends(user_repository)):
+    """Dependency para use case de login"""
+    return Login(user_repository)
+
+
+CreateUserDependency = Annotated[CreateUser, Depends(create_user)]
+GetUsersDependency = Annotated[GetUsers, Depends(get_users)]
+UpdateUserDependency = Annotated[UpdateUser, Depends(update_user)]
+LoginDependency = Annotated[Login, Depends(login)]
+GetCurrentUserDependency = Annotated[GetCurrentUser, Depends(get_current_user)]

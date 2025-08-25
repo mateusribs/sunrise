@@ -18,8 +18,6 @@ from src.interfaces.http.schemas.user_schemas import (
 
 router = APIRouter(prefix='/users', tags=['users'])
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/auth/login', refreshUrl='/auth/refresh_token')
-UsersListOffset = Annotated[int, Query(0, ge=0)]
-UsersListLimit = Annotated[int, Query(10, ge=1, le=100)]
 TokenDependency = Annotated[str, Depends(oauth2_scheme)]
 
 
@@ -27,9 +25,9 @@ TokenDependency = Annotated[str, Depends(oauth2_scheme)]
 async def get_users(
     get_current_user: GetCurrentUserDependency,
     use_case: GetUsersDependency,
-    offset: UsersListOffset,
-    limit: UsersListLimit,
     token: TokenDependency,
+    offset=Query(0, ge=0),
+    limit=Query(10, ge=1, le=100),
 ):
     try:
         current_user = await get_current_user.execute(token)
