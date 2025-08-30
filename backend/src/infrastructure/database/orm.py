@@ -39,20 +39,19 @@ class MoodModel:
     registry_type: Mapped[str]
     description: Mapped[str]
     id: Mapped[str] = mapped_column(primary_key=True)
-    created_at: Mapped[datetime] = mapped_column(default=func.now(), server_default=func.now())
-    updated_at: Mapped[datetime] = mapped_column(
-        default=func.now(), server_default=func.now(), onupdate=func.now()
-    )
 
     associated_emotions: Mapped[list['AssociatedEmotionsModel']] = relationship(
-        init=False,
         cascade='all, delete-orphan',
         lazy='selectin',
     )
     triggers: Mapped[list['EmotionalTriggerModel']] = relationship(
-        init=False,
         cascade='all, delete-orphan',
         lazy='selectin',
+    )
+
+    created_at: Mapped[datetime] = mapped_column(default=func.now(), server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(
+        default=func.now(), server_default=func.now(), onupdate=func.now()
     )
 
 
@@ -60,8 +59,8 @@ class MoodModel:
 class AssociatedEmotionsModel:
     __tablename__ = 'associated_emotions'
 
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    mood_id: Mapped[str] = mapped_column(ForeignKey('moods.id'))
+    id: Mapped[int] = mapped_column(init=False, primary_key=True, autoincrement=True)
+    mood_id: Mapped[str] = mapped_column(ForeignKey('moods.id'), nullable=False)
     name: Mapped[str]
     intensity: Mapped[int]
     created_at: Mapped[datetime] = mapped_column(default=func.now(), server_default=func.now())
@@ -74,7 +73,7 @@ class AssociatedEmotionsModel:
 class EmotionalTriggerModel:
     __tablename__ = 'emotional_triggers'
 
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(init=False, primary_key=True, autoincrement=True)
     mood_id: Mapped[str] = mapped_column(ForeignKey('moods.id'))
     name: Mapped[str]
     created_at: Mapped[datetime] = mapped_column(default=func.now(), server_default=func.now())
