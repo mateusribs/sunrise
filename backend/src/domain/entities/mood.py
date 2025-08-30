@@ -28,6 +28,7 @@ class AssociatedEmotion(Enum):
 
 class Mood(BaseModel):
     id: str
+    user_id: str
     registry_type: RegistryType
     visual_scale: VisualScale
     associated_emotions: list[AssociatedEmotion]
