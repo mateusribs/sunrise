@@ -1,3 +1,4 @@
+from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -10,6 +11,7 @@ from src.infrastructure.database.orm import (
     AssociatedEmotionsModel,
     EmotionalTriggerModel,
     MoodModel,
+    UserModel,
 )
 
 
@@ -75,3 +77,9 @@ class SQLAlchemyMoodRepository(MoodRepository):
         except IntegrityError as e:
             await self.session.rollback()
             raise IntegrityConstraintViolationError(f'Integrity constraint violated: {e}')
+
+    async def list_moods(self, user_id: str, offset: int, limit: int) -> list[Mood]:
+        result = await self.session.scalars(
+            select(MoodModel).where(UserModel.id == user_id).offset(offset).limit(limit)
+        )
+        return [self._model_to_entity(mood) for mood in result.all()]

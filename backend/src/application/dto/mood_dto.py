@@ -10,3 +10,11 @@ class RegisterMoodCommand:
     associated_emotions: list[dict[str, Any]]
     triggers: list[dict[str, Any]] = field(default_factory=list)
     description: str = ''
+
+
+@dataclass
+class GetMoodsCommand:
+    user_id: str
+    is_admin: bool = False
+    offset: int = 0
+    limit: int = 100

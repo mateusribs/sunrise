@@ -7,3 +7,7 @@ class MoodRepository(ABC):
     @abstractmethod
     async def save(self, mood: Mood) -> Mood:
         pass
+
+    @abstractmethod
+    async def list_moods(self, user_id: str, offset: int, limit: int) -> list[Mood]:
+        pass
