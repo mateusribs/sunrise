@@ -38,7 +38,7 @@ extend-exclude = ['migrations']
 
 [tool.ruff.lint]
 preview = true
-select = ['I', 'F', 'E', 'W', 'PL', 'PT', 'FAST']
+select = ['I', 'F', 'E', 'W', 'PL', 'PT', 'FAST', 'T20']
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["PLR6301", "PLR2004"]

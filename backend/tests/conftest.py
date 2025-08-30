@@ -103,6 +103,29 @@ async def user(session, password_service):
 
 
 @pytest_asyncio.fixture(scope='function')
+async def admin_user(session, password_service):
+    password = 'testadmin'
+    user = UserFactory(password=password_service.hash_password(password))
+    user.is_admin = True
+    session.add(user)
+    await session.commit()
+    await session.refresh(user)
+
+    user.clean_password = password
+
+    return user
+
+
+@pytest_asyncio.fixture(scope='function')
+async def user_with_moods(session, user):
+    moods = MoodFactory.create_batch(10, user_id=user.id)
+    session.add_all(moods)
+    await session.commit()
+    await session.refresh(user)
+    return user
+
+
+@pytest_asyncio.fixture(scope='function')
 async def other_user(session, password_service):
     password = 'testuser'
     user = UserFactory(password=password_service.hash_password(password))
@@ -124,6 +147,38 @@ def user_token(client, user):
     return response.json()['access_token']
 
 
+class AssociatedEmotionsFactory(factory.Factory):
+    class Meta:
+        model = AssociatedEmotionsModel
+
+    mood_id: str = ''
+    name = factory.Iterator(['joy', 'sadness', 'anger', 'fear', 'surprise'])
+    intensity = factory.Faker('random_int', min=1, max=10)
+
+
+class TriggersFactory(factory.Factory):
+    class Meta:
+        model = EmotionalTriggerModel
+
+    mood_id: str = ''
+    name = factory.Faker('word')
+
+
+class MoodFactory(factory.Factory):
+    class Meta:
+        model = MoodModel
+
+    user_id: str = ''
+    id = factory.LazyAttribute(lambda x: str(uuid.uuid4()))
+    visual_scale = factory.Faker('random_int', min=1, max=5)
+    registry_type = factory.Iterator(['daily', 'event'])
+    description = factory.Faker('sentence')
+    associated_emotions = factory.LazyAttribute(
+        lambda o: AssociatedEmotionsFactory.create_batch(2, mood_id=o.id)
+    )
+    triggers = factory.LazyAttribute(lambda o: TriggersFactory.create_batch(2, mood_id=o.id))
+
+
 class UserFactory(factory.Factory):
     class Meta:
         model = UserModel
@@ -136,28 +191,3 @@ class UserFactory(factory.Factory):
     last_name = factory.Faker('last_name')
     is_admin = False
     is_active = True
-
-
-class MoodFactory(factory.Factory):
-    class Meta:
-        model = MoodModel
-
-    user_id: str
-    id = factory.LazyAttribute(lambda x: str(uuid.uuid4()))
-    visual_scale = factory.Faker('random_int', min=1, max=10)
-    registry_type = factory.Iterator(['happy', 'sad', 'angry', 'anxious'])
-    description = factory.Faker('sentence')
-    associated_emotions = factory.List([
-        AssociatedEmotionsModel(
-            mood_id=factory.LazyAttribute(lambda o: o.id),
-            name=factory.Iterator(['joy', 'sadness', 'anger', 'fear', 'surprise']),
-            intensity=factory.Faker('random_int', min=1, max=10),
-        )
-        for _ in range(2)
-    ])
-    triggers = factory.List([
-        EmotionalTriggerModel(
-            mood_id=factory.LazyAttribute(lambda o: o.id), name=factory.Faker('word')
-        )
-        for _ in range(2)
-    ])
