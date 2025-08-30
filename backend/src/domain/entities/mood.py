@@ -1,9 +1,10 @@
 import uuid
 from enum import Enum
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field
 
-from src.domain.exceptions.mood_exceptions import InvalidEmotionIntensityError
+from src.domain.entities.associated_emotion import AssociatedEmotion
+from src.domain.entities.emotional_trigger import EmotionalTrigger
 
 
 class VisualScale(Enum):
@@ -19,32 +20,12 @@ class RegistryType(Enum):
     EVENT = 'event'
 
 
-class AssociatedEmotion(Enum):
-    ANGER = 'anger'
-    FEAR = 'fear'
-    JOY = 'joy'
-    SADNESS = 'sadness'
-    SURPRISE = 'surprise'
-
-
 class Mood(BaseModel):
     user_id: str
     registry_type: RegistryType
     visual_scale: VisualScale
     associated_emotions: list[AssociatedEmotion]
-    emotions_intensity: dict[AssociatedEmotion, int]
 
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    triggers: list[str] = []
+    triggers: list[EmotionalTrigger] = Field(default_factory=list)
     description: str = ''
-
-    @field_validator('emotions_intensity')
-    def check_emotions_intensity(cls, value):
-        lower_bound = 1
-        upper_bound = 10
-        for emotion, intensity in value.items():
-            if not (lower_bound <= intensity <= upper_bound):
-                raise InvalidEmotionIntensityError(
-                    f'Intensity for {emotion} must be between {lower_bound} and {upper_bound}'
-                )
-        return value
