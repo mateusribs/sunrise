@@ -36,6 +36,7 @@ class MoodModel:
 
     user_id: Mapped[str] = mapped_column(ForeignKey('users.id'))
     visual_scale: Mapped[int]
+    registry_type: Mapped[str]
     description: Mapped[str]
     id: Mapped[str] = mapped_column(primary_key=True)
     created_at: Mapped[datetime] = mapped_column(default=func.now(), server_default=func.now())
