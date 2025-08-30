@@ -4,12 +4,10 @@ from typing_extensions import Annotated
 
 from src.application.dto.user_dto import GetUsersCommand, UpdateUserCommand
 from src.application.exceptions import EntityAlreadyExistsError, EntityNotFoundError
+from src.application.use_cases import get_current_user, list_users
+from src.application.use_cases import update_user as update_user_uc
 from src.domain.exceptions.user_exceptions import InsufficientPermissionsError
-from src.interfaces.http.dependencies import (
-    GetCurrentUserDependency,
-    GetUsersDependency,
-    UpdateUserDependency,
-)
+from src.interfaces.http.dependencies import UserRepositoryDependency
 from src.interfaces.http.schemas.user_schemas import (
     UserListResponse,
     UserResponse,
@@ -23,21 +21,20 @@ TokenDependency = Annotated[str, Depends(oauth2_scheme)]
 
 @router.get('/', response_model=UserListResponse)
 async def get_users(
-    get_current_user: GetCurrentUserDependency,
-    use_case: GetUsersDependency,
+    user_repository: UserRepositoryDependency,
     token: TokenDependency,
     offset=Query(0, ge=0),
     limit=Query(10, ge=1, le=100),
 ):
     try:
-        current_user = await get_current_user.execute(token)
+        current_user = await get_current_user(user_repository, token)
         command = GetUsersCommand(
             offset=offset,
             limit=limit,
             is_admin=current_user.is_admin,
             is_active=current_user.is_active,
         )
-        users = await use_case.execute(command)
+        users = await list_users(user_repository, command)
         return UserListResponse(users=[UserResponse.from_entity(user) for user in users])
     except InsufficientPermissionsError as e:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(e))
@@ -46,12 +43,11 @@ async def get_users(
 @router.put('/{user_id}', response_model=UserResponse)
 async def update_user(
     user_id: str,
+    user_repository: UserRepositoryDependency,
     request: UserUpdateRequest,
-    get_current_user: GetCurrentUserDependency,
-    update_user: UpdateUserDependency,
     token: TokenDependency,
 ):
-    current_user = await get_current_user.execute(token)
+    current_user = await get_current_user(user_repository, token)
     try:
         command = UpdateUserCommand(
             user_id=user_id,
@@ -59,7 +55,7 @@ async def update_user(
             first_name=request.first_name,
             last_name=request.last_name,
         )
-        user = await update_user.execute(command, current_user)
+        user = await update_user_uc(user_repository, command, current_user)
         return UserResponse.from_entity(user)
 
     except EntityNotFoundError as e:

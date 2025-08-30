@@ -5,13 +5,14 @@ from fastapi.security import OAuth2PasswordRequestForm
 
 from src.application.dto.user_dto import CreateUserCommand, LoginCommand
 from src.application.exceptions import EntityAlreadyExistsError
+from src.application.use_cases import create_user, get_access_token
 from src.domain.exceptions.user_exceptions import (
     InactiveUserError,
     InvalidCredentialsError,
     UserDomainError,
     UserNotFoundError,
 )
-from src.interfaces.http.dependencies import CreateUserDependency, LoginDependency
+from src.interfaces.http.dependencies import UserRepositoryDependency
 from src.interfaces.http.schemas.user_schemas import (
     TokenResponse,
     UserRegisterRequest,
@@ -24,7 +25,7 @@ OAuth2Form = Annotated[OAuth2PasswordRequestForm, Depends()]
 
 
 @router.post('/signup', status_code=status.HTTP_201_CREATED, response_model=UserResponse)
-async def create_user(request: UserRegisterRequest, use_case: CreateUserDependency):
+async def signup(request: UserRegisterRequest, user_repository: UserRepositoryDependency):
     try:
         command = CreateUserCommand(
             username=request.username,
@@ -33,7 +34,7 @@ async def create_user(request: UserRegisterRequest, use_case: CreateUserDependen
             first_name=request.first_name,
             last_name=request.last_name,
         )
-        user = await use_case.execute(command)
+        user = await create_user(user_repository, command)
         return UserResponse.from_entity(user)
 
     except UserDomainError as e:
@@ -44,11 +45,11 @@ async def create_user(request: UserRegisterRequest, use_case: CreateUserDependen
 
 
 @router.post('/login', response_model=TokenResponse)
-async def login(form_data: OAuth2Form, use_case: LoginDependency):
+async def login(form_data: OAuth2Form, user_repository: UserRepositoryDependency):
     """Endpoint para autenticação e obtenção de token"""
     try:
         command = LoginCommand(email=form_data.username, password=form_data.password)
-        access_token = await use_case.execute(command)
+        access_token = await get_access_token(user_repository, command)
         return TokenResponse(access_token=access_token)
 
     except (InvalidCredentialsError, UserNotFoundError):
@@ -63,17 +64,3 @@ async def login(form_data: OAuth2Form, use_case: LoginDependency):
             detail=str(e),
             headers={'WWW-Authenticate': 'Bearer'},
         )
-
-
-@router.post('/refresh_token', response_model=TokenResponse)
-async def refresh_access_token(
-    # current_user: User = Depends(),  # Será implementado no dependency injection
-    # token_service será injetado
-):
-    """Endpoint para renovar token de acesso"""
-    # Implementar quando necessário
-    # new_access_token = token_service.create_access_token(data={'sub': current_user.email})
-    # return TokenResponse(access_token=new_access_token)
-    raise HTTPException(
-        status_code=status.HTTP_501_NOT_IMPLEMENTED, detail='Refresh token not implemented yet'
-    )
