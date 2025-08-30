@@ -54,14 +54,6 @@ def mock_db_time():
     return _mock_db_time
 
 
-# @pytest.fixture(autouse=True)
-# def export_test_environment(monkeypatch):
-#     monkeypatch.setenv('DATABASE_URL', 'sqlite+aiosqlite:///:memory:')
-#     monkeypatch.setenv('JWT_SECRET_KEY', 'secret')
-#     monkeypatch.setenv('JWT_ALGORITHM', 'HS256')
-#     monkeypatch.setenv('JWT_ACCESS_TOKEN_EXPIRE_MINUTES', '10')
-
-
 @pytest.fixture
 def client(session):
     def get_session_override():
@@ -84,7 +76,7 @@ def user_repository(session):
     return SQLAlchemyUserRepository(session)
 
 
-@pytest_asyncio.fixture
+@pytest_asyncio.fixture(scope='function')
 async def user(session, password_service):
     password = 'testuser'
     user = UserFactory(password=password_service.hash_password(password))
@@ -97,7 +89,7 @@ async def user(session, password_service):
     return user
 
 
-@pytest_asyncio.fixture
+@pytest_asyncio.fixture(scope='function')
 async def other_user(session, password_service):
     password = 'testuser'
     user = UserFactory(password=password_service.hash_password(password))
