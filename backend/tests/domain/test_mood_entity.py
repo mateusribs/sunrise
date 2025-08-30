@@ -8,6 +8,7 @@ from src.domain.exceptions.mood_exceptions import InvalidEmotionIntensityError
 def test_create_valid_mood():
     mood = Mood(
         id='1',
+        user_id='1',
         registry_type=RegistryType.DAILY,
         visual_scale=VisualScale.HAPPY,
         associated_emotions=[AssociatedEmotion.JOY],
@@ -28,6 +29,7 @@ def test_create_invalid_registry_type():
     with pytest.raises(ValidationError):
         Mood(
             id='1',
+            user_id='1',
             registry_type='invalid_type',
             visual_scale=VisualScale.HAPPY,
             associated_emotions=[AssociatedEmotion.JOY],
@@ -39,6 +41,7 @@ def test_create_invalid_visual_scale():
     with pytest.raises(ValidationError):
         Mood(
             id='1',
+            user_id='1',
             registry_type=RegistryType.DAILY,
             visual_scale='invalid_scale',
             associated_emotions=[AssociatedEmotion.JOY],
@@ -50,6 +53,7 @@ def test_create_invalid_associated_emotions():
     with pytest.raises(ValidationError):
         Mood(
             id='1',
+            user_id='1',
             registry_type=RegistryType.DAILY,
             visual_scale=VisualScale.HAPPY,
             associated_emotions=['invalid_emotion'],
@@ -61,6 +65,7 @@ def test_create_invalid_emotions_intensity_key():
     with pytest.raises(ValidationError):
         Mood(
             id='1',
+            user_id='1',
             registry_type=RegistryType.DAILY,
             visual_scale=VisualScale.HAPPY,
             associated_emotions=[AssociatedEmotion.JOY],
@@ -73,6 +78,7 @@ def test_create_invalid_emotions_intensity_value(intensity):
     with pytest.raises(InvalidEmotionIntensityError):
         Mood(
             id='1',
+            user_id='1',
             registry_type=RegistryType.DAILY,
             visual_scale=VisualScale.HAPPY,
             associated_emotions=[AssociatedEmotion.JOY],
