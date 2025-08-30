@@ -1,6 +1,7 @@
+import uuid
 from enum import Enum
 
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, Field, field_validator
 
 from src.domain.exceptions.mood_exceptions import InvalidEmotionIntensityError
 
@@ -27,13 +28,13 @@ class AssociatedEmotion(Enum):
 
 
 class Mood(BaseModel):
-    id: str
     user_id: str
     registry_type: RegistryType
     visual_scale: VisualScale
     associated_emotions: list[AssociatedEmotion]
     emotions_intensity: dict[AssociatedEmotion, int]
 
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     triggers: list[str] = []
     description: str = ''
 
