@@ -14,3 +14,9 @@ class EntityNotFoundError(SQLDatabaseError):
     """Exception raised when an entity is not found."""
 
     pass
+
+
+class IntegrityConstraintViolationError(SQLDatabaseError):
+    """Exception raised for integrity constraint violations."""
+
+    pass
