@@ -12,18 +12,18 @@ Health tracking app for mood, symptoms, medications, and daily life monitoring w
 - As a developer, I need database schema for all entities
 
 **Technical Tasks:**
-- [ ] Setup PostgreSQL database
-- [ ] Implement JWT authentication
-- [ ] Create user management system
+- [x] Setup PostgreSQL database
+- [x] Implement JWT authentication
+- [x] Create user management system
 - [ ] Database schema design (users, conditions, symptoms, medications, mood_entries, etc.)
 
 **Definition of Done:**
-- [ ] User can register and login
-- [ ] JWT tokens are generated and validated
-- [ ] Database schema is deployed
-- [ ] All endpoints return proper HTTP status codes
-- [ ] Password hashing implemented
-- [ ] API tests pass
+- [x] User can register and login
+- [x] JWT tokens are generated and validated
+- [x] Database schema is deployed
+- [x] All endpoints return proper HTTP status codes
+- [x] Password hashing implemented
+- [x] API tests pass
 
 ### Sprint 2: Core Data Models
 **User Stories:**
