@@ -1,3 +1,4 @@
+import random
 import uuid
 from contextlib import contextmanager
 from datetime import datetime
@@ -12,8 +13,15 @@ from testcontainers.postgres import PostgresContainer
 
 from src.api import app
 from src.domain.services.password import PasswordService
-from src.infrastructure.database.orm import UserModel, table_registry
+from src.infrastructure.database.orm import (
+    AssociatedEmotionsModel,
+    EmotionalTriggerModel,
+    MoodModel,
+    UserModel,
+    table_registry,
+)
 from src.infrastructure.database.session import get_session
+from src.infrastructure.repositories.mood_repository import SQLAlchemyMoodRepository
 from src.infrastructure.repositories.user_repository import SQLAlchemyUserRepository
 
 
@@ -76,6 +84,11 @@ def user_repository(session):
     return SQLAlchemyUserRepository(session)
 
 
+@pytest.fixture
+def mood_repository(session):
+    return SQLAlchemyMoodRepository(session)
+
+
 @pytest_asyncio.fixture(scope='function')
 async def user(session, password_service):
     password = 'testuser'
@@ -116,10 +129,35 @@ class UserFactory(factory.Factory):
         model = UserModel
 
     id = factory.LazyAttribute(lambda x: str(uuid.uuid4()))
-    username = factory.Sequence(lambda n: f'user{n}')
+    username = factory.LazyFunction(lambda: f'user{random.randint(1, 10000)}')
     email = factory.LazyAttribute(lambda obj: f'{obj.username}@example.com')
-    password = factory.LazyFunction(lambda obj: f'{obj.username}_secret')
+    password = factory.LazyAttribute(lambda obj: f'{obj.username}_secret')
     first_name = factory.Faker('first_name')
     last_name = factory.Faker('last_name')
     is_admin = False
     is_active = True
+
+
+class MoodFactory(factory.Factory):
+    class Meta:
+        model = MoodModel
+
+    user_id: str
+    id = factory.LazyAttribute(lambda x: str(uuid.uuid4()))
+    visual_scale = factory.Faker('random_int', min=1, max=10)
+    registry_type = factory.Iterator(['happy', 'sad', 'angry', 'anxious'])
+    description = factory.Faker('sentence')
+    associated_emotions = factory.List([
+        AssociatedEmotionsModel(
+            mood_id=factory.LazyAttribute(lambda o: o.id),
+            name=factory.Iterator(['joy', 'sadness', 'anger', 'fear', 'surprise']),
+            intensity=factory.Faker('random_int', min=1, max=10),
+        )
+        for _ in range(2)
+    ])
+    triggers = factory.List([
+        EmotionalTriggerModel(
+            mood_id=factory.LazyAttribute(lambda o: o.id), name=factory.Faker('word')
+        )
+        for _ in range(2)
+    ])
