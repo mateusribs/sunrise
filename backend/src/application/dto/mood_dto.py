@@ -18,3 +18,19 @@ class GetMoodsCommand:
     is_admin: bool = False
     offset: int = 0
     limit: int = 100
+
+
+@dataclass
+class UpdateMoodCommand:
+    user_id: str
+    mood_id: str
+    visual_scale: int | None = None
+    associated_emotions: list[dict[str, Any]] | None = None
+    triggers: list[dict[str, Any]] | None = None
+    description: str | None = None
+
+
+@dataclass
+class DeleteMoodCommand:
+    user_id: str
+    mood_id: str

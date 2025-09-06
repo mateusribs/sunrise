@@ -11,3 +11,15 @@ class MoodRepository(ABC):
     @abstractmethod
     async def list_moods(self, user_id: str, offset: int, limit: int) -> list[Mood]:
         pass
+
+    @abstractmethod
+    async def find_mood_by_id(self, mood_id: str, user_id: str) -> Mood:
+        pass
+
+    @abstractmethod
+    async def update(self, mood: Mood) -> Mood:
+        pass
+
+    @abstractmethod
+    async def delete(self, mood_id: str, user_id: str) -> None:
+        pass
