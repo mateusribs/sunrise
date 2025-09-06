@@ -53,7 +53,7 @@ class TestListMoods:
     @pytest.mark.asyncio
     async def test_list_moods_as_admin(self, mood_repository, admin_user, user_with_moods):
         current_user = admin_user
-        command = GetMoodsCommand(user_id=user_with_moods.id, is_admin=current_user.is_admin)
+        command = GetMoodsCommand(user_id=user_with_moods.id)
         moods = await list_moods(mood_repository, command, current_user)
         assert len(moods) == 10
 
