@@ -26,7 +26,7 @@ async def list_moods(
     mood_repository: MoodRepository, command: GetMoodsCommand, current_user: User
 ) -> list[Mood]:
     if current_user.id != command.user_id:
-        if not command.is_admin:
+        if not current_user.is_admin:
             raise InsufficientPermissionsError('Not enough permissions')
 
     return await mood_repository.list_moods(

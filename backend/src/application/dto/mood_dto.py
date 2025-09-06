@@ -15,7 +15,6 @@ class RegisterMoodCommand:
 @dataclass
 class GetMoodsCommand:
     user_id: str
-    is_admin: bool = False
     offset: int = 0
     limit: int = 100
 
