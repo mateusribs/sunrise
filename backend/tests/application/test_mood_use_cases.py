@@ -6,7 +6,6 @@ from src.application.dto.mood_dto import (
     RegisterMoodCommand,
     UpdateMoodCommand,
 )
-from src.application.exceptions.sql_database import IntegrityConstraintViolationError
 from src.application.use_cases.mood import delete_mood, list_moods, register_mood, update_mood
 from src.domain.entities.associated_emotion import AssociatedEmotion
 from src.domain.entities.emotional_trigger import EmotionalTrigger
@@ -24,11 +23,11 @@ class TestRegisterMood:
             associated_emotions=[{'name': 'joy', 'intensity': 8}],
             triggers=[{'name': 'saw a rainbow'}],
         )
-        mood = await register_mood(mood_repository, command)
+        mood = await register_mood(mood_repository, command, user)
         assert mood.id is not None
 
     @pytest.mark.asyncio
-    async def test_register_mood_with_invalid_user(self, mood_repository):
+    async def test_register_mood_with_unauthorized_user(self, mood_repository, user):
         command = RegisterMoodCommand(
             user_id='invalid_user_id',
             visual_scale=5,
@@ -37,10 +36,8 @@ class TestRegisterMood:
             associated_emotions=[{'name': 'joy', 'intensity': 8}],
             triggers=[{'name': 'saw a rainbow'}],
         )
-        with pytest.raises(
-            IntegrityConstraintViolationError, match='Integrity constraint violated'
-        ):
-            await register_mood(mood_repository, command)
+        with pytest.raises(InsufficientPermissionsError, match='Not enough permissions'):
+            await register_mood(mood_repository, command, user)
 
 
 class TestListMoods:
