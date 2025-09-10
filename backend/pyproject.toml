@@ -42,7 +42,7 @@ select = ['I', 'F', 'E', 'W', 'PL', 'PT', 'FAST', 'T20']
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["PLR6301", "PLR2004"]
-"src/*" = ["F403"]
+"src/*" = ["F403", "PLR0913", "PLR0917"]
 
 [tool.ruff.format]
 preview = true
