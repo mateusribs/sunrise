@@ -10,7 +10,13 @@ from src.domain.entities.user import User
 from src.domain.exceptions.user_exceptions import InsufficientPermissionsError
 
 
-async def register_mood(mood_repository: MoodRepository, mood_command: RegisterMoodCommand) -> Mood:
+async def register_mood(
+    mood_repository: MoodRepository, mood_command: RegisterMoodCommand, current_user: User
+) -> Mood:
+    if current_user.id != mood_command.user_id:
+        if not current_user.is_admin:
+            raise InsufficientPermissionsError('Not enough permissions')
+
     mood = Mood(
         user_id=mood_command.user_id,
         registry_type=mood_command.registry_type,
